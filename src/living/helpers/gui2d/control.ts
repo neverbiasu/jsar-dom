@@ -169,7 +169,7 @@ export class Control2D {
   private _overwriteWidth: number;
   private _imageData: ImageDataImpl;
   private _isDirty = true;
-
+  private _transform: DOMMatrix;
   constructor(
     private _allocator: taffy.Allocator,
     private _element: HTMLContentElement | ShadowRootImpl
@@ -228,6 +228,14 @@ export class Control2D {
     }
   }
 
+  get transform(): DOMMatrix {
+    return this._transform;
+  }
+  
+  set transform(value: DOMMatrix) {
+    this._transform = value;
+  }
+  
   private _ownInnerText(): boolean {
     const element = this._element;
     return element.childNodes.length === 1 && isTextNode(element);
@@ -748,45 +756,9 @@ export class Control2D {
   }
   
   private _updateTransfrom() {
-    const transformMatrix = this._getTransformFromParents();
+    const transformMatrix = this.transform;
     const ctx = this._renderingContext;
     ctx.setTransform(transformMatrix);
-  }
-
-  private _getTransformFromParents(): DOMMatrix {
-    let element = this._element;
-    let matrix = new DOMMatrix([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
-    let tmpElement = element;
-    while (tmpElement) {
-      const style = (tmpElement as HTMLContentElement).style;
-      const transformStr = style.transform;
-      if (transformStr !== 'none') {
-        const transformMatrix = this._parserTransform(transformStr)
-        matrix = matrix.multiply(transformMatrix);
-      }
-      tmpElement = element.parentElement as HTMLContentElement;
-    }
-    return matrix;
-  }
-
-  private _parserTransform(transformStr: string): DOMMatrix {
-    const transforms = transformStr.split(' ').reverse(); // transformation is applied from right to left 
-    let matrix = new DOMMatrix([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
-    for (const transform in transforms) {
-      const [type, ...args] = transform.split('('); // not sure
-      if (type === 'translateX') {
-        const x = parseFloat(args[0]);
-        const translateMatrix = new DOMMatrix([1, 0, 0, x, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
-        matrix = matrix.multiply(translateMatrix);
-      }
-
-      if (type === 'rotate') {
-        const angle = parseFloat(args[0]);
-        const rotateMatrix = new DOMMatrix([Math.cos(angle), Math.sin(angle), 0, 0, -Math.sin(angle), Math.cos(angle), 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
-        matrix = matrix.multiply(rotateMatrix);
-      }
-      return matrix;
-    }
   }
 
   containsPoint(x: number, y: number): boolean {

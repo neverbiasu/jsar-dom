@@ -311,6 +311,7 @@ export class InteractiveDynamicTexture extends BABYLON.DynamicTexture {
       isDirtyAfterRendering = control.isDirty();
     } else {
       layout = currentElementOrControl._control.layoutNode.getLayout();
+      currentElementOrControl._control.transform = this._getTransformFromParents(currentElementOrControl) // 传入transform
       currentElementOrControl._renderSelf.call(currentElementOrControl, layout, base);
       elementOrShadowRoot = currentElementOrControl;
       isDirtyAfterRendering = currentElementOrControl._control.isDirty();
@@ -333,6 +334,42 @@ export class InteractiveDynamicTexture extends BABYLON.DynamicTexture {
       }
     }
     return isDirtyAfterRendering;
+  }
+
+
+  private _getTransformFromParents(tmpElement: HTMLContentElement): DOMMatrix {
+    let matrix = new DOMMatrix([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
+    while (tmpElement) {
+      const style = (tmpElement as HTMLContentElement).style;
+      const transformStr = style.transform;
+      if (transformStr !== 'none') {
+        const transformMatrix = this._parserTransform(transformStr)
+        matrix = matrix.multiply(transformMatrix);
+      }
+      tmpElement = tmpElement.parentElement as HTMLContentElement;
+    }
+    return matrix;
+  }
+
+  // 不能在render里调，开销太大
+  private _parserTransform(transformStr: string): DOMMatrix {
+    const transforms = transformStr.split(' ').reverse(); // transformation is applied from right to left 
+    let matrix = new DOMMatrix([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
+    for (const transform in transforms) {
+      const [type, ...args] = transform.split('('); // not sure
+      if (type === 'translateX') {
+        const x = parseFloat(args[0]);
+        const translateMatrix = new DOMMatrix([1, 0, 0, x, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
+        matrix = matrix.multiply(translateMatrix);
+      }
+
+      if (type === 'rotate') {
+        const angle = parseFloat(args[0]);
+        const rotateMatrix = new DOMMatrix([Math.cos(angle), Math.sin(angle), 0, 0, -Math.sin(angle), Math.cos(angle), 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
+        matrix = matrix.multiply(rotateMatrix);
+      }
+      return matrix;
+    }
   }
 
   /**
