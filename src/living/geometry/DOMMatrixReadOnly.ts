@@ -112,7 +112,7 @@ export default class DOMMatrixReadOnlyImpl implements DOMMatrixReadOnly {
     if (!init) {
       this._is2D = true;
       this._isIdentity = true;
-      this._matrixElements.set([1, 0, 0, 1, 0, 0], 0);
+      this._matrixElements.set([1, 0, 0, 1, 0, 0], 0); // err
       return;
     }
     

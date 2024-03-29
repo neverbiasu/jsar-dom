@@ -360,7 +360,7 @@ export class InteractiveDynamicTexture extends BABYLON.DynamicTexture {
       const [type, ...args] = transform.split('('); // not sure
       if (type === 'translate') {
         const x = parseFloat(args[0]);
-        const translateMatrix = new DOMMatrix([1, 0, 0, x, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
+        const translateMatrix = new DOMMatrix([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, x, 0, 0, 1]);
         matrix = matrix.multiply(translateMatrix);
       }
 
