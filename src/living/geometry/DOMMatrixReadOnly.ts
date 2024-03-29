@@ -1,5 +1,7 @@
 import DOMPoint from './DOMPoint';
 import { post_multiply, pre_multiply } from './MatrixFunction';
+import { getInterfaceWrapper } from '../interfaces';
+
 export const Get_Matrix_Elements = Symbol('_ReadInternalSymbol');
 export default class DOMMatrixReadOnlyImpl implements DOMMatrixReadOnly {
   protected _matrixElements: Float32Array;
@@ -164,12 +166,14 @@ export default class DOMMatrixReadOnlyImpl implements DOMMatrixReadOnly {
   }
 
   translate(tx?: number, ty?: number, tz?: number): DOMMatrix {
-    const tmpMatrix = new DOMMatrix(Array.from(this._matrixElements));
+    const DOMMatrixImpl = getInterfaceWrapper('DOMMatrix');
+    const tmpMatrix = new DOMMatrixImpl(Array.from(this._matrixElements));
     return tmpMatrix.translateSelf(tx, ty, tz);
   }
 
   scale(scaleX?: number, scaleY?: number, scaleZ?: number, originX?: number, originY?: number, originZ?: number): DOMMatrix {
-    const tmpMatrix = new DOMMatrix(Array.from(this._matrixElements));
+    const DOMMatrixImpl = getInterfaceWrapper('DOMMatrix');
+    const tmpMatrix = new DOMMatrixImpl(Array.from(this._matrixElements));
     return tmpMatrix.scaleSelf(scaleX, scaleY, scaleZ, originX, originY, originZ);
   }
 
@@ -193,8 +197,9 @@ export default class DOMMatrixReadOnlyImpl implements DOMMatrixReadOnly {
     throw new Error("Method not implemented.");
   }
 
-  multiply(other?: DOMMatrix): DOMMatrix{
-    const tmpMatrix = new DOMMatrix(Array.from(this._matrixElements));
+  multiply(other?: DOMMatrix): DOMMatrix {
+    const DOMMatrixImpl = getInterfaceWrapper('DOMMatrix');
+    const tmpMatrix = new DOMMatrixImpl(Array.from(this._matrixElements));
     return tmpMatrix.multiplySelf(other)
   }
 

@@ -170,6 +170,7 @@ export class Control2D {
   private _imageData: ImageDataImpl;
   private _isDirty = true;
   private _transform: DOMMatrix;
+  private _currentTransform: DOMMatrix;
   constructor(
     private _allocator: taffy.Allocator,
     private _element: HTMLContentElement | ShadowRootImpl
@@ -234,6 +235,14 @@ export class Control2D {
   
   set transform(value: DOMMatrix) {
     this._transform = value;
+  }
+
+  get currentTransform(): DOMMatrix {
+    return this._currentTransform;
+  }
+  
+  set currentTransform(value: DOMMatrix) {
+    this._currentTransform = value;
   }
   
   private _ownInnerText(): boolean {
@@ -761,6 +770,16 @@ export class Control2D {
     ctx.setTransform(transformMatrix);
   }
 
+  _accumulatesTransform() {
+    const transformMatrix = this.transform;
+    const tmpElement = this._element;
+    const parentElement = tmpElement.parentElement as HTMLContentElement;
+    const parentControl = parentElement._control;
+    const parentMatrix = parentControl.currentTransform;
+    const transform =  parentMatrix.multiply(transformMatrix);
+    this.currentTransform = transform;
+  }
+  
   containsPoint(x: number, y: number): boolean {
     const rect = this._lastRect;
     if (!rect) {

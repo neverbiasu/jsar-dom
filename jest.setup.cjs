@@ -1,2 +1,2 @@
-Error.stackTraceLimit = Infinity;
+// Error.stackTraceLimit = Infinity;
 global.BABYLON = require('babylonjs');

@@ -13,6 +13,7 @@ import type DOMPointImpl from './geometry/DOMPoint';
 import type DOMPointReadOnlyImpl from './geometry/DOMPointReadOnly';
 import type DOMRectImpl from './geometry/DOMRect';
 import type DOMRectReadOnlyImpl from './geometry/DOMRectReadOnly';
+import type DOMMatrixImpl from './geometry/DOMMatrix';
 import type XRPoseImpl from './xr/XRPose';
 import type XRRigidTransformImpl from './xr/XRRigidTransform';
 import type XRSessionImpl from './xr/XRSession';
@@ -90,6 +91,7 @@ export async function loadImplementations() {
     import('./geometry/DOMPointReadOnly'),
     import('./geometry/DOMRect'),
     import('./geometry/DOMRectReadOnly'),
+    import('./geometry/DOMMatrix'),
     import('./image/ImageData'),
     // WebXR
     import('./xr/XRPose'),
@@ -149,6 +151,7 @@ export async function loadImplementations() {
     DOMPointReadOnlyImpl,
     DOMRectImpl,
     DOMRectReadOnlyImpl,
+    DOMMatrixImpl,
     ImageDataImpl,
     // WebXR
     XRPoseImpl,
@@ -202,6 +205,7 @@ export async function loadImplementations() {
     implementedInterfaces.set('DOMPointReadOnly', DOMPointReadOnlyImpl.default);
     implementedInterfaces.set('DOMRect', DOMRectImpl.default);
     implementedInterfaces.set('DOMRectReadOnly', DOMRectReadOnlyImpl.default);
+    implementedInterfaces.set('DOMMatrix', DOMMatrixImpl.default)
     implementedInterfaces.set('ImageData', ImageDataImpl.default);
     implementedInterfaces.set('XRPose', XRPoseImpl.default);
     implementedInterfaces.set('XRRigidTransform', XRRigidTransformImpl.default);
@@ -225,6 +229,7 @@ export function getInterfaceWrapper(name: 'DOMPoint'): typeof DOMPointImpl;
 export function getInterfaceWrapper(name: 'DOMPointReadOnly'): typeof DOMPointReadOnlyImpl;
 export function getInterfaceWrapper(name: 'DOMRect'): typeof DOMRectImpl;
 export function getInterfaceWrapper(name: 'DOMRectReadOnly'): typeof DOMRectReadOnlyImpl;
+export function getInterfaceWrapper(name: 'DOMMatrix'): typeof DOMMatrixImpl;
 export function getInterfaceWrapper(name: 'ImageData'): typeof ImageDataImpl
 export function getInterfaceWrapper(name: 'XRPose'): typeof XRPoseImpl;
 export function getInterfaceWrapper(name: 'XRRigidTransform'): typeof XRRigidTransformImpl;
