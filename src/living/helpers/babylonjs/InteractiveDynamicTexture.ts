@@ -311,7 +311,8 @@ export class InteractiveDynamicTexture extends BABYLON.DynamicTexture {
       isDirtyAfterRendering = control.isDirty();
     } else {
       layout = currentElementOrControl._control.layoutNode.getLayout();
-      currentElementOrControl._control.transform = this._getTransformFromParents(currentElementOrControl) // 传入transform
+      const control =  currentElementOrControl._control;
+      control.transform = this._getTransformFromParents(currentElementOrControl) // 传入transform
       currentElementOrControl._renderSelf.call(currentElementOrControl, layout, base);
       elementOrShadowRoot = currentElementOrControl;
       isDirtyAfterRendering = currentElementOrControl._control.isDirty();
@@ -357,7 +358,7 @@ export class InteractiveDynamicTexture extends BABYLON.DynamicTexture {
     let matrix = new DOMMatrix([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
     for (const transform in transforms) {
       const [type, ...args] = transform.split('('); // not sure
-      if (type === 'translateX') {
+      if (type === 'translate') {
         const x = parseFloat(args[0]);
         const translateMatrix = new DOMMatrix([1, 0, 0, x, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
         matrix = matrix.multiply(translateMatrix);

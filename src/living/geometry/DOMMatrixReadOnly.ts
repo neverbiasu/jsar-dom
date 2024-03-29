@@ -239,7 +239,24 @@ export default class DOMMatrixReadOnlyImpl implements DOMMatrixReadOnly {
   }
 
   toJSON() {
-    throw new Error("Method not implemented.");
+    return {
+      m11: this.m11,
+      m12: this.m12,
+      m13: this.m13,
+      m14: this.m14,
+      m21: this.m21,
+      m22: this.m22,
+      m23: this.m23,
+      m24: this.m24,
+      m31: this.m31,
+      m32: this.m32,
+      m33: this.m33,
+      m34: this.m34,
+      m41: this.m41,
+      m42: this.m42,
+      m43: this.m43,
+      m44: this.m44,
+  };
   }
 
   transformPoint(point?: DOMPointInit): DOMPoint {

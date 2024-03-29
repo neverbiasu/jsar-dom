@@ -164,7 +164,7 @@ export class Control2D {
   private _lastRect: DOMRectReadOnlyImpl;
   private _lastCursor: BABYLON.Vector2;
   private _isCursorInside = false;
-  private _renderingContext: CanvasRenderingContext2D;
+  protected _renderingContext: CanvasRenderingContext2D;
   private _overwriteHeight: number;
   private _overwriteWidth: number;
   private _imageData: ImageDataImpl;
@@ -174,9 +174,9 @@ export class Control2D {
     private _allocator: taffy.Allocator,
     private _element: HTMLContentElement | ShadowRootImpl
   ) {
-    if (this._element == null || !this._element) {
-      throw new DOMExceptionImpl('element must not be null', 'INVALID_STATE_ERR');
-    }
+    // if (this._element == null || !this._element) {
+    //   throw new DOMExceptionImpl('element must not be null', 'INVALID_STATE_ERR');
+    // }
   }
 
   init(defaultStyle?: LayoutStyle) {
@@ -417,7 +417,7 @@ export class Control2D {
     /**
      * Render the transform.
      */
-    this._updateTransfrom();
+    this._updateTransform();
   }
 
   /**
@@ -755,7 +755,7 @@ export class Control2D {
     renderingContext.putImageData(this._imageData, rect.x, rect.y, 0, 0, rect.width, rect.height);
   }
   
-  private _updateTransfrom() {
+  _updateTransform() {
     const transformMatrix = this.transform;
     const ctx = this._renderingContext;
     ctx.setTransform(transformMatrix);
