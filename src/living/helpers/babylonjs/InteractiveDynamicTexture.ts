@@ -6,7 +6,8 @@ import { HTMLContentElement } from '../../nodes/HTMLContentElement';
 import { isHTMLContentElement } from '../../node-type';
 import { Control2D } from '../gui2d/control';
 import { domSymbolTree } from '../internal-constants';
-import DOMMatrix from '../../geometry/DOMMatrix'
+import DOMMatrixImpl from '../../geometry/DOMMatrix'
+import { post_multiply } from '../../geometry/MatrixFunction';
 /**
  * The `InteractiveDynamicTexture` is copied from BabylonJS `InteractiveDynamicTexture` and modified to support the texture to interact in JSAR runtime.
  */
@@ -353,20 +354,27 @@ export class InteractiveDynamicTexture extends BABYLON.DynamicTexture {
     }));
     console.log(transforms);
     // const transforms = transformStr.split(' ').reverse(); // transformation is applied from right to left 
-    let matrix = new DOMMatrix([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
+    let matrix: DOMMatrix = new DOMMatrixImpl([1, 0, 0, 0,   0, 1, 0, 0,  0, 0, 1, 0,   0, 0, 0, 1]);
     console.log("🐻", transforms[0]);
+    console.log("🐔matrix: ", matrix);
     transforms.forEach(transform => {
       console.log("🐔🐔", transform.type);
       if (transform.type === 'translateX') {
         const x = parseFloat(transform.value);
-        const translateMatrix = new DOMMatrix([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, x, 0, 0, 1]);
-        matrix = matrix.multiply(translateMatrix) as DOMMatrix;
+        const translateMatrix: DOMMatrix = new DOMMatrixImpl([1, 0, 0, 0,  0, 1, 0, 0,  0, 0, 1, 0,  x, 0, 0, 1]);
+        console.log("🐷", translateMatrix);
+        matrix = post_multiply(matrix, translateMatrix);
+        // console.log("🐼", matrix);
       }
 
       if (transform.type === 'rotate') {
         const angle = parseFloat(transform.value);
-        const rotateMatrix = new DOMMatrix([Math.cos(angle), Math.sin(angle), 0, 0, -Math.sin(angle), Math.cos(angle), 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
-        matrix = matrix.multiply(rotateMatrix) as DOMMatrix;
+        console.log("🐻🐻", Math.cos(angle * Math.PI / 180));
+        const cosValue = Number(Math.cos(angle * Math.PI / 180).toFixed(2));
+        const sinValue = Number(Math.sin(angle * Math.PI / 180).toFixed(2));
+        const rotateMatrix: DOMMatrix = new DOMMatrixImpl([cosValue, sinValue, 0, 0,  -sinValue, cosValue, 0, 0,  0, 0, 1, 0,   0, 0, 0, 1]);
+        matrix = post_multiply(matrix, rotateMatrix) as DOMMatrixImpl;
+        console.log("🐻‍❄️rotateMatrix: ", rotateMatrix);
       }
     });
     return matrix;
